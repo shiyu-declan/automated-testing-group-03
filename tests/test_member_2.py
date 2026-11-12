@@ -124,3 +124,50 @@ def test_add_two_tasks(page: Page):
     expect(task_items.locator("label")).to_have_text(
         ["Read the instructions", "Practise the examples"]
     )
+
+def test_delete_active_task(page: Page):
+    page.goto(URL)
+    task_items = page.locator(".todo-list li")
+
+    expect(task_items).to_have_count(0)
+
+    add_task(page, "Task to delete")
+    add_task(page, "Task to keep")
+    expect(task_items).to_have_count(2)
+
+    task_to_delete = task_items.filter(has_text="Task to delete")
+    task_to_delete.hover()
+    task_to_delete.get_by_role("button", name="Delete").click()
+
+    expect(task_items).to_have_count(1)
+    expect(task_items.locator("label")).to_have_text(["Task to keep"])
+
+    page.screenshot(
+        path="docs/evidence/member-2/extra-test-1-delete-active-task.png",
+        full_page=True,
+    )
+
+def test_delete_completed_task(page: Page):
+    page.goto(URL)
+    task_items = page.locator(".todo-list li")
+
+    expect(task_items).to_have_count(0)
+
+    add_task(page, "Write summary")
+    add_task(page, "Review notes")
+    expect(task_items).to_have_count(2)
+
+    finished = task_items.filter(has_text="Write summary")
+    finished.get_by_role("checkbox").check()
+    expect(finished.get_by_role("checkbox")).to_be_checked()
+
+    finished.hover()
+    finished.get_by_role("button", name="Delete").click()
+
+    expect(task_items).to_have_count(1)
+    expect(task_items.locator("label")).to_have_text(["Review notes"])
+
+    page.screenshot(
+        path="docs/evidence/member-2/extra-test-2-delete-completed-task.png",
+        full_page=True,
+    )
