@@ -122,3 +122,51 @@ def test_add_two_tasks(page: Page):
     expect(task_items.locator("label")).to_have_text(
         ["Read the instructions", "Practise the examples"]
     )
+
+def edit_task_success(page: Page, old_task_name: str, new_task_name: str):
+    page.get_by_text(old_task_name).dblclick()
+    page.get_by_role("textbox", name="Edit").fill(new_task_name)
+    page.get_by_role("textbox", name="Edit").press("Enter")
+
+def edit_task_cancel(page: Page, old_task_name: str, new_task_name: str):
+    page.get_by_text(old_task_name).dblclick()
+    page.get_by_role("textbox", name="Edit").fill(new_task_name)
+    page.get_by_role("textbox", name="Edit").press("Escape")
+
+def test_save_an_edit_with_enter(page: Page):
+    task_items = page.locator(".todo-list li")
+    task_labels = task_items.locator("label")
+    page.goto(URL)
+
+    # Add your setup and actions.
+    add_task(page, "Create tests")
+    edit_task_success(page, "Create tests", "Edit tests")
+
+    # Add meaningful assertions.
+    expect(task_items).to_have_count(1)
+    expect(task_labels).to_have_text(["Edit tests"])
+
+    # Capture your final PNG after the assertions.
+    page.screenshot(
+    path="docs/evidence/member-1/extra-test-1-save-edit.png",
+    full_page=True,
+    )
+
+def test_cancel_an_edit_with_escape(page: Page):
+    task_items = page.locator(".todo-list li")
+    task_labels = task_items.locator("label")
+    page.goto(URL)
+
+    # Add your setup and actions.
+    add_task(page, "Create tests")
+    edit_task_cancel(page, "Create tests", "Edit tests")
+
+    # Add meaningful assertions.
+    expect(task_items).to_have_count(1)
+    expect(task_labels).to_have_text(["Create tests"])
+
+    # Capture your final PNG after the assertions.
+    page.screenshot(
+    path="docs/evidence/member-1/extra-test-1-cancel-edit.png",
+    full_page=True,
+    )
