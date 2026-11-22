@@ -139,3 +139,45 @@ def test_add_two_tasks(page: Page):
     expect(task_items.locator("label")).to_have_text(
         ["Read the instructions", "Practise the examples"]
     )
+
+def test_completed_filter_with_mixed_items(page: Page):
+    page.goto(URL)
+
+    # Add your setup and actions.
+    task_items = page.locator(".todo-list li")
+    add_task(page, "item 1")
+
+    checkbox = task_items.first.get_by_role("checkbox")
+    checkbox.check()
+    
+    add_task(page,"item 2")
+
+    page.get_by_role("link", name="Completed").click()
+    # Add meaningful assertions.
+
+    # Capture your final PNG after the assertions.
+    page.screenshot(
+        path="docs/evidence/member-5/extra-test-1-completed_filter_with_mixed_items.png",
+        full_page=True,
+)
+    
+def test_return_to_all_from_a_filtered_list(page: Page):
+    page.goto(URL)
+
+    # Add your setup and actions.
+    task_items = page.locator(".todo-list li")
+
+    add_task(page, "item 1")
+    checkbox = task_items.first.get_by_role("checkbox")
+    checkbox.check()
+
+    page.get_by_role("link", name="Completed").click()
+    add_task(page,"item 2")
+    page.get_by_role("link", name="All").click()
+    # Add meaningful assertions.
+
+    # Capture your final PNG after the assertions.
+    page.screenshot(
+        path="docs/evidence/member-5/extra-test-2-return_to_all_from_a_filtered_list.png",
+        full_page=True,
+)
